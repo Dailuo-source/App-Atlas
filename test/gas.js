@@ -87,7 +87,7 @@ const ctx = {
   LockService: { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) },
   ScriptApp: { getOAuthToken: () => 'fake-token' },
   UrlFetchApp: { fetchAll: reqs => reqs.map(fetchOne), fetch: (u, o) => fetchOne(Object.assign({ url: u }, o)) },
-  Utilities: { getUuid: () => 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' },
+  Utilities: { getUuid: () => 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', sleep: () => {} },
   ContentService: { MimeType: { JSON: 'json' }, createTextOutput: t => ({ text: t, setMimeType() { return this; } }) },
   HtmlService: { createHtmlOutput: h => ({ h }) }
 };

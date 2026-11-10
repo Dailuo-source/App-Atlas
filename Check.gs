@@ -28,7 +28,7 @@ function checkApps_(only) {
     });
     function add(i, kind, req) { reqs.push(req); at.push([i, kind]); }
     var got = apps.map(function () { return {}; });
-    UrlFetchApp.fetchAll(reqs).forEach(function (res, n) { got[at[n][0]][at[n][1]] = res; });
+    fetchAllRetry_(reqs).forEach(function (res, n) { got[at[n][0]][at[n][1]] = res; });
 
     // Stage 2: the deployed version's code and date.
     var reqs2 = [], at2 = [];
@@ -40,7 +40,7 @@ function checkApps_(only) {
       reqs2.push(gas_('projects/' + a.scriptId + '/content?versionNumber=' + v)); at2.push([i, 'live']);
       reqs2.push(gas_('projects/' + a.scriptId + '/versions/' + v)); at2.push([i, 'ver']);
     });
-    if (reqs2.length) UrlFetchApp.fetchAll(reqs2).forEach(function (res, n) { got[at2[n][0]][at2[n][1]] = res; });
+    if (reqs2.length) fetchAllRetry_(reqs2).forEach(function (res, n) { got[at2[n][0]][at2[n][1]] = res; });
 
     apps.forEach(function (a, i) {
       var snap;
@@ -57,6 +57,19 @@ function gh_(token, repo, path, raw) {
 }
 function gas_(path) {
   return { url: 'https://script.googleapis.com/v1/' + path, muteHttpExceptions: true, headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() } };
+}
+// Google's Apps Script API sometimes answers 429/5xx when many requests arrive at once:
+// retry just those, twice, with a short pause.
+function fetchAllRetry_(reqs) {
+  var out = UrlFetchApp.fetchAll(reqs);
+  for (var round = 0; round < 2; round++) {
+    var redo = [];
+    out.forEach(function (res, n) { var c = res.getResponseCode(); if (c === 429 || c >= 500) redo.push(n); });
+    if (!redo.length) break;
+    Utilities.sleep(1500 * (round + 1));
+    UrlFetchApp.fetchAll(redo.map(function (n) { return reqs[n]; })).forEach(function (res, k) { out[redo[k]] = res; });
+  }
+  return out;
 }
 function text_(res) { return res && res.getResponseCode() === 200 ? res.getContentText() : null; }
 
@@ -113,10 +126,13 @@ function backendState_(a, g) {
     if (t === null) { out.state = 'error'; out.detail = 'Couldn\'t read ' + files[k].path + ' from GitHub'; return out; }
     gh[files[k].name] = t;
   }
+  // A failed read is "couldn't check", never "different".
+  if (!g.live || g.live.getResponseCode() !== 200) { out.state = 'error'; out.detail = 'Google didn\'t send the live code (' + (g.live ? g.live.getResponseCode() : 'no answer') + '); next check will retry'; return out; }
   var live = filesOf_(g.live), head = filesOf_(g.head);
   var liveSame = sameCode_(gh, live), headSame = sameCode_(gh, head);
   out.differs = liveSame.differs;
   if (liveSame.same) out.state = 'match';
+  else if (!head) { out.state = 'error'; out.detail = 'Google didn\'t send the editor code (' + (g.head ? g.head.getResponseCode() : 'no answer') + '); next check will retry'; }
   else if (headSame.same) out.state = 'saved';     // pushed to the editor, no new version yet
   else if (sameCode_(head, live).same && live) out.state = 'behind'; // GitHub has code that isn't in the editor
   else out.state = 'behind';
