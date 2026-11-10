@@ -13,6 +13,8 @@ Replaces the earlier claude.ai page "App Atlas" (artifact Bzy6VjeagAtC6Afmzhq16r
 | --- | --- |
 | Live app | https://ourappatlas.pages.dev/ (Cloudflare Pages project `ourappatlas`; appatlas was taken; build output directory `web`) — change `SITE` in `Code.gs` if the project name differs |
 | Repo | `Dailuo-source/App-Atlas` (private) |
+| Cloud project | Google Cloud project **App Atlas** (`app-atlas-514318`, number 329079759782): Apps Script API on, sign-in screen External + **In production** (so the hourly trigger's sign-in doesn't expire every 7 days), home page and `web/privacy.html` as its links. The script is linked to it (Project Settings → GCP project). The default hidden project can't have the API turned on |
+| Web app | Deployment `AKfycbxpeL5vrLATFtr0eEarAeMcx3ONRLw_EAiuix9NThLf2X3KOVv5dxJpk6HxltqZ1y-XRg` (Execute as Me, Anyone). Always update this one (Manage deployments → pencil → New version) |
 | Database | Google Sheet **App Atlas** (garyluo.gs@gmail.com, in My AI Apps), id `1PJRxT0VjcPJJ2RTmhR9KxalxgxlXV7v19Rt33uICG_8` |
 | Backend | Apps Script **App Atlas** bound to the sheet (script id `1wkhIYBgn25pW58EJhnveHzYfgJ97Eekh0ZSQaSyrvYoJ10qL6_9e9zWm`, in `.clasp.json`): `Code.gs` (API, tabs, menu, setup) + `Check.gs` (the hourly check). `appsscript.json` lists the scopes |
 | Connecting | Sheet menu **App Atlas → Show phone link** → `https://ourappatlas.pages.dev/#api=<exec>&key=<key>` (stored on the device as `aa.api`, `aa.key`) |
@@ -24,7 +26,7 @@ Replaces the earlier claude.ai page "App Atlas" (artifact Bzy6VjeagAtC6Afmzhq16r
 - `web/sw.js` `CACHE` → site version.
 - Commits (last 100) → last change; `Claude-Session: https://claude.ai/…` trailers → "Chats that changed it". Housekeeping commits (`Brief: For Gary checklist…`, merges) are skipped.
 - Branches other than main → "not merged" rows with a Cloudflare preview link (`https://<branch>.<pagesProject>.pages.dev/`).
-- **Backend deploy status** (Apps Script API, Gary's own token): the web app deployment with the highest version is "live". Its code (`content?versionNumber=N`) and the editor's saved code (`content`) are compared with the repo files in the Apps tab's `backendFiles` (`path=name; …`, default `Code.gs=Code`). States: `match`, `saved` (editor = GitHub, no new version yet), `behind` (GitHub newer), `noaccess` (another account's script, e.g. Flip Friend/Flip Folio on the business account), `apioff` (Gary must switch on the Apps Script API at script.google.com/home/usersettings), `nodeploy`, `error`. `behind`/`saved` add an automatic "deploy" to-do unless an open to-do already mentions deploy.
+- **Backend deploy status** (Apps Script API, Gary's own token, through the App Atlas Cloud project): the web app deployment with the highest version is "live". Its code (`content?versionNumber=N`) and the editor's saved code (`content`) are compared with the repo files in the Apps tab's `backendFiles` (`path=name; …`, default `Code.gs=Code`). States: `match`, `saved` (editor = GitHub, no new version yet), `behind` (GitHub newer), `noaccess` (another account's script, e.g. Flip Friend/Flip Folio on the business account), `apioff` (Apps Script API off: user setting at script.google.com/home/usersettings, or in the linked Cloud project), `nodeploy`, `error` (also when Google answers 429/5xx after two retries: a failed read is never reported as a difference). `behind`/`saved` add an automatic "deploy" to-do unless an open to-do already mentions deploy.
 
 ## Sheet tabs (matched by header name)
 
@@ -53,13 +55,16 @@ Replaces the earlier claude.ai page "App Atlas" (artifact Bzy6VjeagAtC6Afmzhq16r
 
 ## Status
 
-- 2026-11-06: Built and tested against all 11 real repos with a fake Apps Script API; not set up yet (needs the repo, sheet, token, deployment and Cloudflare project; see SETUP.md). Not yet proven: that the Apps Script API answers from inside Apps Script with the default Cloud project.
+- 2026-11-10: **Live.** Sheet set up, GitHub token in, web app v2, App Atlas Cloud project linked, hourly checks on, site https://ourappatlas.pages.dev/ answering. First clean check: match = SKA Lesson Planner, Climb Buddy, Home Hub, Getaway Guide, Home and Hobby, Flip Friend; behind = Finance Friend, Karate-Ka Companion, SKA Kata Tracker, Pantry Pal; saved = Flip Folio. The business-account scripts (Flip Friend, Flip Folio) are readable too.
+- The Apps Script API allows only a few dozen reads a minute: several manual checks in a row get 429s (shown as "couldn't check", fixed by the next hourly run).
+- Idea not built: when a read fails, keep the previous snapshot's deploy state instead of showing an error.
 
 ## For Gary
 
-- [ ] Create the empty private repo Dailuo-source/App-Atlas so Claude can push this code
-- [ ] Follow SETUP.md (sheet, GitHub token, Apps Script API switch, deploy, Cloudflare Pages, phone link)
+- [ ] Open the phone link (sheet menu App Atlas → Show phone link) on your phone and PC, then Add to Home screen
+- [ ] Turn off the old "App Atlas" scheduled task in Claude and delete the old check reminders
 
 ## Changelog (latest first, keep about 5 lines)
 
+- 2026-11-10: Live: own Cloud project (In production), web app v2, hourly checks on; deploy check retries Google's busy answers and never reports a failed read as a difference; privacy page
 - 2026-11-06: First build: hourly GitHub + Apps Script deploy check, Needs you, app page, Start a change prompt, phone + desktop
