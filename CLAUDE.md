@@ -11,11 +11,11 @@ Replaces the earlier claude.ai page "App Atlas" (artifact Bzy6VjeagAtC6Afmzhq16r
 
 | Piece | Location |
 | --- | --- |
-| Live app | https://appatlas.pages.dev/ (Cloudflare Pages, build output directory `web`) — change `SITE` in `Code.gs` if the project name differs |
+| Live app | https://ourappatlas.pages.dev/ (Cloudflare Pages project `ourappatlas`; appatlas was taken; build output directory `web`) — change `SITE` in `Code.gs` if the project name differs |
 | Repo | `Dailuo-source/App-Atlas` (private) |
-| Database | Google Sheet **App Atlas** (garyluo.gs@gmail.com, in My AI Apps) |
-| Backend | Apps Script bound to the sheet: `Code.gs` (API, tabs, menu, setup) + `Check.gs` (the hourly check). `appsscript.json` lists the scopes |
-| Connecting | Sheet menu **App Atlas → Show phone link** → `https://appatlas.pages.dev/#api=<exec>&key=<key>` (stored on the device as `aa.api`, `aa.key`) |
+| Database | Google Sheet **App Atlas** (garyluo.gs@gmail.com, in My AI Apps), id `1PJRxT0VjcPJJ2RTmhR9KxalxgxlXV7v19Rt33uICG_8` |
+| Backend | Apps Script **App Atlas** bound to the sheet (script id `1wkhIYBgn25pW58EJhnveHzYfgJ97Eekh0ZSQaSyrvYoJ10qL6_9e9zWm`, in `.clasp.json`): `Code.gs` (API, tabs, menu, setup) + `Check.gs` (the hourly check). `appsscript.json` lists the scopes |
+| Connecting | Sheet menu **App Atlas → Show phone link** → `https://ourappatlas.pages.dev/#api=<exec>&key=<key>` (stored on the device as `aa.api`, `aa.key`) |
 | Secrets | Script properties `APP_KEY`, `GITHUB_TOKEN` (fine-grained, read-only Contents on Dailuo-source repos), `WEB_APP_URL`, `LAST_CHECK` |
 
 ## Where the information comes from (each app's repo)

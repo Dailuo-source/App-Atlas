@@ -10,7 +10,7 @@
  * Script properties: APP_KEY, GITHUB_TOKEN, WEB_APP_URL.
  */
 
-var SITE = 'https://appatlas.pages.dev/';
+var SITE = 'https://ourappatlas.pages.dev/';
 var TABS = {
   Apps: ['id', 'name', 'repo', 'site', 'pagesProject', 'scriptId', 'backendFiles', 'order', 'hidden'],
   Snapshot: ['id', 'checkedAt', 'json'],
