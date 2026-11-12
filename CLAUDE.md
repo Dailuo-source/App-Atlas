@@ -22,7 +22,12 @@ Replaces the earlier claude.ai page "App Atlas" (artifact Bzy6VjeagAtC6Afmzhq16r
 
 ## Where the information comes from (each app's repo)
 
-- **CLAUDE.md** `## Status` → "Where you left off" (undated lines first, then dated lines newest first). `## For Gary` (`- [ ] step`) → that app's to-dos. `## Changelog` (`- YYYY-MM-DD: text`) → History. Every app's brief has these three sections; keeping them current is part of every session's wrap-up.
+- **CLAUDE.md** `## Status` → "Where you left off" (undated lines first, then dated lines newest first). `## For Gary` (`- [ ] step`) → that app's to-dos. `## Motion
+
+- **Motion pack** (`window.MP`, same copy in every app; Climb Buddy is the model): the `<script>` block before `</body>` in `web/index.html`, set up by the `MP.init({...})` line under it. Panels rise from the bottom and slip back down, toasts rise and slip away (setting `.hidden = true` plays the slip-away first, then hides; the app still reads `.hidden` as true at once), a new screen's pieces rise in one after another, and a new row on the same screen rises in. Unhurried (Gary wants animations easy to see); off under reduced motion. If a close function empties or removes the panel, do it after `MP.ms` (or use `MP.out(el, done)`), or the panel slides away empty.
+
+## Changelog` (`- YYYY-MM-DD: text`) → History. Every app's brief has these three sections; keeping them current is part of every session's wrap-up.
+- 2026-11-12: Motion pack: panels and toasts rise and slip away, new screens rise in, new rows rise in. sw v3
 - `web/sw.js` `CACHE` → site version.
 - Commits (last 100) → last change; `Claude-Session: https://claude.ai/…` trailers → "Chats that changed it". Housekeeping commits (`Brief: For Gary checklist…`, merges) are skipped.
 - Branches other than main → "not merged" rows with a Cloudflare preview link (`https://<branch>.<pagesProject>.pages.dev/`).
